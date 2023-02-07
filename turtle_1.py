@@ -40,7 +40,7 @@ border_pen.hideturtle()
 
 #downloads image to shape database -- copy paste to shape()
 turtle.register_shape("images/rocket2.gif")
-
+turtle.register_shape("images/rocket3.gif")
 player = turtle.Turtle()
 player.shape("images/rocket2.gif")
 player.penup()
@@ -57,6 +57,9 @@ bullet.setheading(90)
 bullet.shapesize(.5,.5)
 bullet.hideturtle()
 
+#invader turtle
+invader=turtle.Turtle()
+invader.shape("images/rocket3.gif")
 
 
 #keyboard binds
