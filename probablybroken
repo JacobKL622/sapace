@@ -1,0 +1,160 @@
+import turtle
+import math
+
+#setting up the screen
+scr1 = turtle.Screen()
+scr1.bgcolor("black")
+scr1.title("HOMEINVADERS")
+
+#border stuff
+border_pen = turtle.Turtle()
+border_pen.speed(0)
+#Border color
+border_pen.color("white")
+border_pen.penup()
+#starts at bottom left
+border_pen.setposition(-300,-300)
+border_pen.pendown()
+#inner border size
+border_pen.pensize(3)
+for side in range(4):
+    border_pen.fd(600)
+    border_pen.lt(90)
+border_pen.hideturtle()
+
+#Create MUSKET BOI
+player = turtle.Turtle()
+#changes color of MUSKET BOI
+player.color("green")
+#changes player thickness of MUSKETBOI
+player.shape("triangle")
+
+#HOMEINVADER
+enemy = turtle.Turtle()
+#HOMEINVADER color
+enemy.color("red")
+#HOMEINVADER shape 
+enemy.shape("circle")
+
+enemy.penup()
+#HOMEINVADER speed (currently set at fastest)
+enemy.speed(0)
+
+enemy.setposition(-200, 250)
+enemyspeed = 2
+
+
+#MUSKET BOI's MUCKET
+bullet = turtle.Turtle()
+bullet.color("red")
+#bullet shape
+bullet.shape("triangle") 
+bullet.penup()
+bullet.speed(0)
+bullet.setheading(90)
+bullet.shapesize(0.5, 0.5)
+bullet.hideturtle()
+#bullet speed
+bulletspeed = 20
+
+#Defines bullet state
+
+#ready to fire
+bulletstate = "ready"
+#fire
+
+
+#MUSKET BOI STARTING POSITION
+
+player.penup()
+
+player.speed(0)
+#starting position of MUSKET BOI
+player.setposition(0, -250)
+#angle of MUSKET BOI
+player.setheading(90)
+
+
+#MUSKET BOI CONTROLS
+
+#MUSKET SPEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEED 
+playerspeed = 15
+
+
+#Move MUSKET BOI left and right
+def move_left():
+    x = player.xcor()
+    x -= playerspeed
+    #Boundries
+    if x < -280:
+        x = -280
+    player.setx(x)
+
+def move_right():
+    x = player.xcor()
+    x += playerspeed
+    if x > 280:
+        x = 280
+    player.setx(x)
+
+def fire_bullet():
+    #declares bulletstate as global when it needs to change
+    global bulletstate    
+    if bulletstate == "ready":
+        bulletstate = "fire"
+    #move the bullet just above the player
+        x = player.xcor()
+        y = player.ycor()
+        bullet.setposition(x, y +10)
+        bullet.showturtle()
+
+def isCollision(t1, t2):
+    distance = math.sqrt(math.pow(t1.xcor()-t2.xcor()),2)+math.pow(t1.xcor()-t2.xcor(),2)
+    if distance < 15:
+        return True
+    else:
+        return False
+
+#Key bindings    
+turtle.listen()
+turtle.onkey(move_left, "Left")
+
+turtle.onkey(move_right, "Right")
+
+turtle.onkey(fire_bullet, "space")
+
+#Main game loop
+while True:
+
+    #Move the enemy
+    x = enemy.xcor()
+    x += enemyspeed
+    enemy.setx(x)
+
+    #Move the enemy back down
+    if enemy.xcor() > 280:
+        y = enemy.ycor()
+        y -= 40
+        enemyspeed *= -1
+        enemy.sety(y)
+
+    if enemy.xcor() < -280:
+        enemy.ycor()
+        y -= 40
+        enemyspeed *= -1
+        enemy.sety(y)
+    
+    #move the bullet
+    if bulletstate == "fire":
+        y = bullet.ycor()
+        y += bulletspeed
+        bullet.sety(y)
+    
+    #check to see if the bullet has gone to the top
+    if bullet.ycor() > 280:
+        bullet.hideturtle()
+        bulletstate = "ready"
+
+#check for collision between bullet and enemy
+
+delay = input("Enter")
