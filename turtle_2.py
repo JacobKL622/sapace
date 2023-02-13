@@ -1,10 +1,11 @@
 import turtle
 import time
 import random
+import os
 
 #VARIABLES
 bullet_speed = 9
-invader_speed = 3
+invader_speed = 20
 speed=20
 #PLAYER MOVEMENT AND SHOOTING
 def move_left():
@@ -18,11 +19,7 @@ def move_right():
         x=249
     player.setx(x)
 
-def shoot():
-    x=player.xcor()
-    y=player.ycor()
-    bullet.setposition(x,y+40)
-    bullet.showturtle()
+
 
 
 
@@ -61,11 +58,33 @@ player.setposition(0, -250)
 bullet=turtle.Turtle()
 bullet.color("lightblue")
 bullet.shape("images/rocket4.gif")
+bullet.penup
 bullet.up()
 bullet.speed(0)
 bullet.setheading(90)
 bullet.shapesize(.5,.5)
 bullet.hideturtle()
+
+#bullet state
+#ready
+bulletstate="ready"
+
+#fire
+
+def shoot():
+    global bulletstate
+    if bulletstate == "ready":
+        bulletstate = "fire"
+        x = player.xcor()
+        y = player.ycor() + 40
+        bullet.setposition (x, y)
+        bullet.showturtle()
+
+#keyboard binds
+turtle.listen()
+turtle.onkey(move_left, "Left")
+turtle.onkey(move_right, "Right")
+turtle.onkey(shoot, "space")
 
 #invader turtle 
 #Creates the invader turtle
@@ -87,50 +106,54 @@ score_pen.setposition(-290,310)
 score_pen.write("Score %s" %score)
 score_pen.hideturtle()
 
-#keyboard binds
-turtle.listen()
-turtle.onkey(move_left, "Left")
-turtle.onkey(move_right, "Right")
-turtle.onkey(shoot, "space")
-
-# detects if bullet hits invader, updates score, and stuff :)
+#Main game loop
 while True:
-    bullet.forward(bullet_speed)
-    invader.forward(invader_speed)
-  #  if invader.xcor()>260 or invader.xcor()<-260:
-   #     invader.right(180)
-    #    invader.forward(invader_speed)
 
 #Move the invader
-    x = invader.xcor()
-    x += invader_speed
+    x=invader.xcor()
+    x+= invader_speed
     invader.setx(x)
-
-    #Move the invader back down
-    if invader.xcor() > 280:
+#Move the invader back down
+    if invader.xcor() > 270:
         y = invader.ycor()
         y -= 40
         invader_speed *= -1
         invader.sety(y)
-
-    if invader.xcor() < -280:
-        invader.ycor()
+    if invader.xcor() < -270:
+        y = invader.ycor()
         y -= 40
         invader_speed *= -1
         invader.sety(y)
+#bullet
+    y = bullet.ycor()
+    y+= bullet_speed
+    bullet.sety(y)
+    #checks is bullet has gone up
+    if bullet.ycor() > 275:
+        bullet.hideturtle()
+        bulletstate="ready"
 
+    #collision
     if abs(bullet.xcor()-invader.xcor())<15 and abs(bullet.ycor()-invader.ycor())<15:
         bullet.hideturtle()
-        score = score+10
         score_pen.clear()
+        score = score+10
         score_pen.write("Score %s" %score)
-        invader.hideturtle()
+        #invader.hideturtle()
+        bulletstate = "ready"
+        bullet.setposition(0,400) 
+        #reset enemy
+        invader.setposition(-200,250)
         
-        invader.showturtle()
-        x=random.randint(-250,250)
-        invader.setposition(x,250)
-
-        #player.setposition(0,-250)
+        #gameover stuff
+    if abs(invader.xcor()-player.xcor())<15 and abs(invader.ycor()-player.ycor())<15:
+        player.hideturtle()
+        invader.hideturtle()
+        print("GAME OVER")
         break
+        
+
+
+
 
 delay = input("Enter")
