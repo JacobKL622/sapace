@@ -8,13 +8,14 @@ wn = turtle.Screen()
 wn.bgcolor("black")
 wn.title("HOMEINVADERS")
 # BACKGROUND FILE HERE
-wn.bgpic("rocket5.gif")
+wn.bgpic("rocket6.gif")
+wn.tracer(0)
 
 # register the shapes
-wn.register_shape("rocket2.gif")
-wn.register_shape("rocket3.gif")
+wn.register_shape("rocket10.gif")
+wn.register_shape("rocket11.gif")
 wn.register_shape("rocket4.gif")
-wn.register_shape("rocket5.gif")
+wn.register_shape("rocket6.gif")
 
 # border stuff
 border_pen = turtle.Turtle()
@@ -53,7 +54,7 @@ player = turtle.Turtle()
 # changes color of MUSKET BOI
 player.color("green")
 #changes player thickness of MUSKETBOI
-player.shape("rocket2.gif")
+player.shape("rocket10.gif")
 # MUSKET BOI STARTING POSITION
 player.penup()
 player.speed(0)
@@ -65,7 +66,7 @@ player.setheading(90)
 player.speed = 0
 
 # choose a # of enemies
-number_of_enemies = 5
+number_of_enemies = 30
 # create empty list of enemies
 enemies = []
 
@@ -73,19 +74,28 @@ enemies = []
 for i in range(number_of_enemies):
     enemies.append(turtle.Turtle())
 
+enemy_start_x = -225
+enemy_start_y = 250
+enemy_number = 0
+
+
 for enemy in enemies:
     # HOMEINVADER color
     enemy.color("red")
     # HOMEINVADER shape 
-    enemy.shape("rocket3.gif")
+    enemy.shape("rocket11.gif")
     enemy.penup()
     # HOMEINVADER speed (currently set at fastest)
     enemy.speed(0)
-    x = random.randint(-200, 200)
-    y = random.randint(100, 250)
+    x = enemy_start_x + (50 * enemy_number)
+    y = enemy_start_y
     enemy.setposition(x, y)
-    
-enemyspeed = 2
+    #update teh invader #
+    enemy_number += 1
+    if enemy_number == 10:
+        enemy_start_y -= 50
+        enemy_number = 0
+enemyspeed = 0.3
 
 
 # MUSKET BOI's MUCKET
@@ -100,7 +110,7 @@ bullet.shapesize(0.5, 0.5)
 bullet.hideturtle()
 
 # bullet speed
-bulletspeed = 20
+bulletspeed = 7
 
 # Defines bullet state
 # ready to fire
@@ -127,6 +137,7 @@ def move_player():
     player.setx(x)
     if x > 280:
         x = 280
+    player.setx(x)
 
 def fire_bullet():
     # declares bulletstate as global when it needs to change
@@ -139,12 +150,7 @@ def fire_bullet():
         bullet.setposition(x, y +15)
         bullet.showturtle()
 
-def isCollision(t1, t2):
-    distance = math.sqrt(math.pow(t1.xcor()-t2.xcor(),2)+math.pow(t1.xcor()-t2.xcor(),2))
-    if distance < 15:
-        return True
-    else:
-        return False
+
 
 
 # Key bindings    
@@ -157,7 +163,7 @@ wn.onkeypress(fire_bullet, "space")
 
 # Main game loop
 while True:
-
+    wn.update()
     move_player()
 
     for enemy in enemies:
@@ -187,26 +193,28 @@ while True:
     
 
         # check for collision between bullet and enemy
-        if isCollision(bullet, enemy):
+        if abs(bullet.xcor()-enemy.xcor())<20 and abs(bullet.ycor()-enemy.ycor())<20:
             # reset the bullet
             bullet.hideturtle()
             bulletstate = "ready"
             bullet.setposition(0, -400)
             # reset the enemy
-            x = random.randint(-200, 200)
-            y = random.randint(100, 250)
-            enemy.setposition(x, y)
+            enemy.setposition(0, 4269000)
+
             # update the score
             score += 100
             scorestring = "Score: {}".format(score)
             score_pen.clear()
             score_pen.write(scorestring, False, align="left", font=("Arial", 14, "normal"))
+        y = enemy.ycor            
 
-        #if isCollision(player, enemy):
-            #player.hideturtle()
-            #enemy.hideturtle()
-            #print("GAME OVER")
-            #break
+        if enemy.ycor() <= -200: 
+            player.hideturtle()
+            
+            enemy.hideturtle()
+            print("GAME OVER")
+            break
+
 
     # move the bullet
     if bulletstate == "fire":
