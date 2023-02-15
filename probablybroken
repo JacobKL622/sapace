@@ -110,7 +110,7 @@ bullet.shapesize(0.5, 0.5)
 bullet.hideturtle()
 
 # bullet speed
-bulletspeed = 7
+bulletspeed = 5
 
 # Defines bullet state
 # ready to fire
@@ -120,10 +120,10 @@ bulletstate = "ready"
 
 # Move MUSKET BOI left and right
 def move_left():
-    player.speed = -15
+    player.speed = -3
 
 def move_right():
-    player.speed = 15
+    player.speed = 3
     x = player.xcor()
     x += player.speed
     player.setx(x)
