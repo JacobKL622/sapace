@@ -1,7 +1,9 @@
 import turtle
 import math
 import random
-
+import platform
+import winsound
+import time
 
 # setting up the screen
 wn = turtle.Screen()
@@ -49,6 +51,11 @@ score_pen.write(scorestring, False, align="left", font=("Arial", 14, "normal"))
 score_pen.hideturtle()
 
 
+winsound.PlaySound("musec.wav", winsound.SND_ASYNC | winsound.SND_ALIAS )
+
+
+
+
 # Create MUSKET BOI
 player = turtle.Turtle()
 # changes color of MUSKET BOI
@@ -66,7 +73,7 @@ player.setheading(90)
 player.speed = 0
 
 # choose a # of enemies
-number_of_enemies = 30
+number_of_enemies = 27
 # create empty list of enemies
 enemies = []
 
@@ -92,10 +99,10 @@ for enemy in enemies:
     enemy.setposition(x, y)
     #update teh invader #
     enemy_number += 1
-    if enemy_number == 10:
+    if enemy_number == 9:
         enemy_start_y -= 50
         enemy_number = 0
-enemyspeed = 0.3
+enemyspeed = 0.1
 
 
 # MUSKET BOI's MUCKET
@@ -110,7 +117,7 @@ bullet.shapesize(0.5, 0.5)
 bullet.hideturtle()
 
 # bullet speed
-bulletspeed = 5
+bulletspeed = 4
 
 # Defines bullet state
 # ready to fire
@@ -120,10 +127,10 @@ bulletstate = "ready"
 
 # Move MUSKET BOI left and right
 def move_left():
-    player.speed = -3
+    player.speed = -2.5
 
 def move_right():
-    player.speed = 3
+    player.speed = 2.5
     x = player.xcor()
     x += player.speed
     player.setx(x)
@@ -141,16 +148,15 @@ def move_player():
 
 def fire_bullet():
     # declares bulletstate as global when it needs to change
-    global bulletstate    
+    global bulletstate   
     if bulletstate == "ready":
+        winsound.PlaySound("REE.wav", winsound.SND_ASYNC | winsound.SND_ALIAS )
         bulletstate = "fire"
     # move the bullet just above the player
         x = player.xcor()
         y = player.ycor()
         bullet.setposition(x, y +15)
         bullet.showturtle()
-
-
 
 
 # Key bindings    
@@ -160,6 +166,7 @@ wn.onkeypress(move_left, "Left")
 wn.onkeypress(move_right, "Right")
 
 wn.onkeypress(fire_bullet, "space")
+
 
 # Main game loop
 while True:
@@ -194,6 +201,7 @@ while True:
 
         # check for collision between bullet and enemy
         if abs(bullet.xcor()-enemy.xcor())<20 and abs(bullet.ycor()-enemy.ycor())<20:
+            winsound.PlaySound("DED.wav", winsound.SND_ASYNC | winsound.SND_ALIAS )
             # reset the bullet
             bullet.hideturtle()
             bulletstate = "ready"
@@ -209,11 +217,17 @@ while True:
         y = enemy.ycor            
 
         if enemy.ycor() <= -200: 
+            winsound.PlaySound("REE.wav", winsound.SND_ASYNC | winsound.SND_ALIAS )
             player.hideturtle()
             
             enemy.hideturtle()
             print("GAME OVER")
-            break
+            
+            #pause game after you die
+
+            time.sleep(5)
+            time.sleep(0.300)
+
 
 
     # move the bullet
@@ -228,6 +242,3 @@ while True:
         bulletstate = "ready"
 
     
-
-
-   
