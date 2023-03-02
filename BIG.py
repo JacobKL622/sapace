@@ -22,6 +22,7 @@ wn.register_shape("rocket14.gif")
 wn.register_shape("rocket15.gif")
 wn.register_shape("rocket16.gif")
 wn.register_shape("rocket17.gif")
+wn.register_shape("rocket12.gif")
 
 
 # border stuff
@@ -106,6 +107,20 @@ for enemy in enemies:
         enemy_number = 0
 enemyspeed = 0.1
 
+#ENEMY BULLET
+ebullet = turtle.Turtle()
+ebullet.color("red")
+ebullet.shape("rocket12.gif")
+ebullet.penup()
+ebullet.speed(0)
+ebullet.setheading(90)
+#ebullet.hideturtle()
+
+ebulletspeed = .9
+ebulletstate = "ready"
+
+
+
 # MUSKET BOI's MUCKET
 bullet = turtle.Turtle()
 bullet.color("red")
@@ -122,6 +137,7 @@ bulletspeed = 1.5
 
 # Defines bullet state
 # ready to fire
+
 bulletstate = "ready"
 # fire
 
@@ -158,6 +174,18 @@ def fire_bullet():
         bullet.setposition(x, y +15)
         bullet.showturtle()
 
+# declares bulletstate as global when it needs to change
+def fire_ebullet():
+    # declares bulletstate as global when it needs to change
+    global ebulletstate    
+    if ebulletstate == "ready":
+        ebulletstate = "fire"
+    # move the bullet just above the player
+        x = enemy.xcor()
+        y = enemy.ycor()
+        ebullet.setposition(x, y +15)
+        ebullet.showturtle()
+
 
 
 
@@ -168,6 +196,8 @@ wn.onkeypress(move_left, "Left")
 wn.onkeypress(move_right, "Right")
 
 wn.onkeypress(fire_bullet, "space")
+
+#wn.onkeypress(fire_ebullet, "space")
 
 #level up stuff
 levelUp = 2700
@@ -216,6 +246,7 @@ while True:
             bullet.setposition(0, -400)
             # reset the enemy
             enemyLives -= 1
+            fire_ebullet()
             print(enemyBonus)
             if enemyLives == 0:
                 enemy.setposition(0,420690)
@@ -266,7 +297,7 @@ while True:
                 if enemy_number == 9:
                     enemy_start_y -= 50
                     enemy_number = 0
-    if score == 300:
+    if score == levelUp:
         levelUp = levelUp+2700
         bulletspeed += .003
         AHHH += 1
@@ -287,11 +318,21 @@ while True:
         y = bullet.ycor()
         y += bulletspeed
         bullet.sety(y)
+
+    if ebulletstate == "fire":
+        ey = ebullet.ycor()
+        ey -= ebulletspeed
+        ebullet.sety(ey)
+
     
     # check to see if the bullet has gone to the top
     if bullet.ycor() > 275:
         bullet.hideturtle()
         bulletstate = "ready"
+
+    if ebullet.ycor() < -275:
+        ebullet.hideturtle()
+        ebulletstate= "ready"
 
     
 
